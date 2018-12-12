@@ -1,0 +1,25 @@
+USE neusegunrangedb
+GO
+
+CREATE TRIGGER newMemID
+	ON primary_cust
+	INSTEAD OF INSERT
+AS
+BEGIN
+	SET NOCOUNT ON;
+	declare @id int;
+	declare @cat varchar(9);
+	select @cat = mem_id from INSERTED;
+	select @id = cast(max(right(mem_id,7)) as INT) from primary_cust
+		
+	--Insert Statement for trigger	
+	INSERT into primary_cust
+	select mem_id +right('0000000'+cast(@id as varchar(7)),7)
+	
+	FROM 
+		inserted
+	
+	
+END
+GO
+	
